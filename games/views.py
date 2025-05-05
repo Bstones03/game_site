@@ -11,23 +11,36 @@ def play_game(request):
 # BLACKJACK \/ \/ \/ \/ \/
 ##################################
 
-# Helper function to draw a card
+SUITS = ['♠', '♥', '♦', '♣']
+RANKS = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
+VALUES = {
+    '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7,
+    '8': 8, '9': 9, '10': 10, 'J': 10, 'Q': 10, 'K': 10, 'A': 11
+}
+
 def draw_card():
-    ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
-    return random.choice(ranks)
+    return {'rank': random.choice(RANKS), 'suit': random.choice(SUITS)}
 
 # Calculate hand total
+
 def calculate_total(hand):
     total = 0
     aces = 0
     for card in hand:
-        if card in ['J', 'Q', 'K']:
+        rank = card['rank']
+        if rank in ['J', 'Q', 'K']:
             total += 10
-        elif card == 'A':
+        elif rank == 'A':
             aces += 1
             total += 11
         else:
-            total += int(card)
+            total += int(rank)
+
+    while total > 21 and aces:
+        total -= 10
+        aces -= 1
+
+    return total
 
     # Adjust for aces
     while total > 21 and aces:
