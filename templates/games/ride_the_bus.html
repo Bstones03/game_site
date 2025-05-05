@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Ride the Bus</h2>
+<p><strong>Balance:</strong> ${{ balance }}</p>
+
+{% if result %}
+  <div style="margin: 20px 0;">
+    <p><strong>{{ result }}</strong></p>
+    <div style="margin-top: 10px;">
+      {% for card in cards %}
+        <p><strong>Card {{ forloop.counter }}:</strong> {{ card.rank }}{{ card.suit }}</p>
+      {% endfor %}
+    </div>
+    <a href="?reset=true" class="btn">Play Again</a>
+  </div>
+
+{% elif start_game %}
+  <form method="post" style="margin-top: 20px;">
+    {% csrf_token %}
+    <label for="bet">Enter your bet:</label>
+    <input type="number" name="bet" min="1" max="{{ balance }}" value="{{ bet }}" placeholder="Same as last bet">
+    <button name="action" value="Start">Start Ride</button>
+  </form>
+{% else %}
+  <div style="margin-top: 20px;">
+  {% for card in cards %}
+    <p><strong>Card {{ forloop.counter }}:</strong> {{ card.rank }}{{ card.suit }}</p>
+  {% endfor %}
+  
+  </div>
+
+  <form method="post" style="margin-top: 20px;">
+    {% csrf_token %}
+    {% if stage == 1 %}
+      <p>Guess the color:</p>
+      <button name="guess" value="Red" type="submit">Red</button>
+      <button name="guess" value="Black" type="submit">Black</button>
+
+    {% elif stage == 2 %}
+      <p>Guess higher or lower than Card 1:</p>
+      <p style="font-size: 0.9em; color: #666;">Aces are high.</p>
+      <button name="guess" value="Higher" type="submit">Higher</button>
+      <button name="guess" value="Lower" type="submit">Lower</button>    
+
+    {% elif stage == 3 %}
+      <p>Guess if the next card is outside or in between Card 1 & 2:</p>
+      <p style="font-size: 0.9em; color: #666;">Aces are high.</p>
+      <button name="guess" value="In Between" type="submit">In Between</button>
+      <button name="guess" value="Outside" type="submit">Outside</button>    
+
+    {% elif stage == 4 %}
+      <p>Guess the suit:</p>
+      <button name="guess" value="♥" type="submit">&hearts;</button>
+      <button name="guess" value="♦" type="submit">&diams;</button>
+      <button name="guess" value="♣" type="submit">&clubs;</button>
+      <button name="guess" value="♠" type="submit">&spades;</button>
+      
+    {% endif %}
+    <input type="hidden" name="action" value="Guess">
+    <br><br>
+    <button type="submit" name="action" value="Pull Out">Pull Out ({{ multiplier }}x)</button>
+  </form>
+{% endif %}
+
+<br><br>
+<a href="{% url 'play' %}" style="text-decoration: underline;">Back to Games</a>
+{% endblock %}

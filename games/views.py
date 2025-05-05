@@ -6,6 +6,11 @@ def play_game(request):
     profile, created = UserProfile.objects.get_or_create(user=request.user)
     return render(request, 'games/play.html', {'profile': profile})
 
+
+##################################
+# BLACKJACK \/ \/ \/ \/ \/
+##################################
+
 # Helper function to draw a card
 def draw_card():
     ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
@@ -123,3 +128,123 @@ def blackjack(request):
         'error': '',
     }
     return render(request, 'games/blackjack.html', context)
+
+##################################
+# RIDE THE BUS \/ \/ \/ \/ \/
+##################################
+
+COLORS = {'♥': 'Red', '♦': 'Red', '♠': 'Black', '♣': 'Black'}
+SUITS = ['♥', '♦', '♠', '♣']
+RANKS = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
+VALUES = {rank: i for i, rank in enumerate(RANKS, start=2)}
+
+def draw_card():
+    return {'rank': random.choice(RANKS), 'suit': random.choice(SUITS)}
+
+def ride_the_bus(request):
+    profile, _ = UserProfile.objects.get_or_create(user=request.user)
+    session = request.session
+
+    if request.GET.get("reset"):
+        session_keys = [key for key in session.keys() if key.startswith("rtb_") and key != "rtb_bet"]
+        for key in session_keys:
+            del session[key]
+        return redirect("ride_the_bus")
+
+    # Start Game
+    if request.method == "POST" and request.POST.get("action") == "Start":
+        bet_input = request.POST.get("bet", "").strip()
+        if bet_input:
+            try:
+                bet = int(bet_input)
+                if bet <= 0 or bet > profile.balance:
+                    raise ValueError()
+                session['rtb_bet'] = bet
+            except:
+                return render(request, "games/ride_the_bus.html", {
+                    'balance': profile.balance,
+                    'error': "Invalid bet.",
+                    'start_game': True,
+                    'bet': session.get('rtb_bet', '')
+                })
+
+        bet = session.get("rtb_bet", 0)
+        if bet <= 0 or bet > profile.balance:
+            return render(request, "games/ride_the_bus.html", {
+                'balance': profile.balance,
+                'error': "No valid bet.",
+                'start_game': True,
+                'bet': session.get('rtb_bet', '')
+            })
+
+        session['rtb_stage'] = 1
+        session['rtb_cards'] = []
+        session['rtb_result'] = ''
+        session['rtb_multiplier'] = 1
+        profile.balance -= bet
+        profile.save()
+        return redirect("ride_the_bus")
+
+    # Handle Guess or Pull Out
+    if request.method == "POST":
+        if request.POST.get("action") == "Pull Out":
+            winnings = session['rtb_bet'] * session.get('rtb_multiplier', 1)
+            profile.balance += winnings
+            profile.save()
+            session['rtb_result'] = f"You pulled out and won ${winnings}."
+            return redirect("ride_the_bus")
+
+        elif request.POST.get("action") == "Guess":
+            stage = session.get('rtb_stage', 1)
+            guess = request.POST.get('guess')
+            cards = session.get('rtb_cards', [])
+            new_card = draw_card()
+            val_new = VALUES[new_card['rank']]
+            correct = False
+
+            if stage == 1:
+                correct = (COLORS[new_card['suit']] == guess)
+                session['rtb_multiplier'] = 2
+
+            elif stage == 2:
+                val1 = VALUES[cards[0]['rank']]
+                correct = (guess == 'Higher' and val_new > val1) or (guess == 'Lower' and val_new < val1)
+                session['rtb_multiplier'] = 3
+
+            elif stage == 3:
+                val1 = VALUES[cards[0]['rank']]
+                val2 = VALUES[cards[1]['rank']]
+                low, high = sorted([val1, val2])
+                correct = (guess == 'In Between' and low < val_new < high) or (guess == 'Outside' and (val_new < low or val_new > high))
+                session['rtb_multiplier'] = 4
+
+            elif stage == 4:
+                correct = (new_card['suit'] == guess)
+                session['rtb_multiplier'] = 20
+
+            cards.append(new_card)  # Always add the card
+            session['rtb_cards'] = cards
+
+            if correct:
+                if stage == 4:
+                    winnings = session['rtb_bet'] * session['rtb_multiplier']
+                    profile.balance += winnings
+                    profile.save()
+                    session['rtb_result'] = f"You completed the ride and won ${winnings}!"
+                else:
+                    session['rtb_stage'] = stage + 1
+            else:
+                session['rtb_result'] = f"Wrong guess! You lost your bet of ${session['rtb_bet']} (Card was {new_card['rank']}{new_card['suit']})."
+
+            return redirect("ride_the_bus")
+
+    return render(request, "games/ride_the_bus.html", {
+        'balance': profile.balance,
+        'start_game': 'rtb_stage' not in session,
+        'stage': session.get('rtb_stage', 1),
+        'cards': session.get('rtb_cards', []),
+        'bet': session.get('rtb_bet', ''),
+        'multiplier': session.get('rtb_multiplier', 1),
+        'result': session.get('rtb_result', ''),
+        'error': ''
+    })

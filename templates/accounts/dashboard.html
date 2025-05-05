@@ -2,6 +2,16 @@
 <p>Your Balance: ${{ profile.balance }}</p>
 
 <a href="{% url 'play' %}">Play a Game</a><br>
+<br>
+<form method="post" action="{% url 'add_test_money' %}">
+    {% csrf_token %}
+    <button type="submit">Sell Kidney for $100</button>
+</form>
+<br>
+<p style="font-size: 0.9em; color: #666; text-align: center; margin-top: 1em;">
+    By proceeding, you acknowledge and accept that this agreement is legally binding.
+  </p>
+<br>
 <form action="{% url 'logout' %}" method="post" style="display: inline;">
     {% csrf_token %}
     <button type="submit">Logout</button>
