@@ -3,10 +3,340 @@
 <head>
     <meta charset="UTF-8">
     <title>Game Site</title>
+    <style>
+        /*
+         * Author: Harvey Walter
+         * Email: harvey.walter@student.cune.edu
+         * Couldn't get it to link with stylesheet so here we are.
+         */
+
+
+        /* ========== Global Styles ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background 0.5s ease, color 0.5s ease;
+        }
+
+        body.dark-mode {
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 100%);
+            color: #c9d1d9;
+        }
+
+
+        /* ========== Header ========== */
+        .header {
+            background: linear-gradient(90deg, #ff6a00, #ee0979);
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+            opacity: 0.3;
+        }
+
+        .header__title {
+            font-size: 2.8rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            animation: neonGlow 1.5s infinite alternate;
+        }
+
+
+        /* ========== Main Container ========== */
+        .main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            flex: 1;
+        }
+
+        .container {
+            max-width: 900px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin: 20px auto;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease, background 0.5s ease;
+        }
+
+        .container.dark-mode {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+
+        /* ========== Headings and Links ========== */
+        h2 {
+            color: #ff6a00;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 8px rgba(255, 106, 0, 0.5);
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .dark-mode h2 {
+            color: #ffdd57;
+            text-shadow: 0 0 8px rgba(255, 221, 87, 0.5);
+        }
+
+        a {
+            color: #00c4b4;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+        }
+
+        a:hover {
+            color: #00e5d2;
+            text-shadow: 0 0 10px rgba(0, 228, 210, 0.7);
+        }
+
+
+        /* ========== Forms and Buttons ========== */
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            transition: background 0.5s ease;
+        }
+
+        form.dark-mode {
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        input {
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #e0e0e0;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px;
+            transition: border-color 0.3s ease, background 0.5s ease;
+        }
+
+        input.dark-mode {
+            background: rgba(0, 0, 0, 0.5);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #ee0979;
+            box-shadow: 0 0 10px rgba(238, 9, 121, 0.5);
+        }
+
+        button {
+            background: linear-gradient(90deg, #ff6a00, #ee0979);
+            color: #fff;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            align-self: flex-end;
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(90deg, #e65c00, #d4086b);
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(238, 9, 121, 0.7);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+
+        /* ========== Game Elements ========== */
+        .game-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, background 0.5s ease;
+            animation: bounceIn 0.5s ease;
+        }
+
+        .game-item.dark-mode {
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .game-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .game-item p {
+            color: #e0e0e0;
+            font-size: 16px;
+            margin: 5px 0;
+        }
+
+        .dark-mode .game-item p {
+            color: #c9d1d9;
+        }
+
+
+        /* ========== Dark Mode Toggle ========== */
+        .toggle-container {
+            text-align: center;
+            padding: 10px;
+        }
+
+        .dark-mode-toggle {
+            background: linear-gradient(90deg, #ff6a00, #ee0979);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .dark-mode-toggle:hover {
+            background: linear-gradient(90deg, #e65c00, #d4086b);
+            transform: scale(1.05);
+        }
+
+        .dark-mode-toggle:active {
+            transform: scale(0.98);
+        }
+
+
+        /* ========== Footer ========== */
+        .footer {
+            background: rgba(0, 0, 0, 0.7);
+            color: #e0e0e0;
+            text-align: center;
+            padding: 15px;
+            margin-top: auto;
+        }
+
+        .footer.dark-mode {
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        .footer__text {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+
+        /* ========== Animations ========== */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes neonGlow {
+            from { text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #ff6a00; }
+            to { text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #ee0979; }
+        }
+
+        
+        /* ========== Responsive Styles ========== */
+        @media (max-width: 600px) {
+            .main {
+                padding: 15px;
+            }
+
+            .container {
+                margin: 10px;
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            form, .game-item {
+                margin: 0 10px;
+            }
+
+            input, button {
+                font-size: 14px;
+            }
+
+            .header__title {
+                font-size: 2rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        {% block content %}{% endblock %}
+    <div class="header">
+        <h1 class="header__title">Game Site</h1>
     </div>
+    <div class="main">
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+    <div class="toggle-container">
+        <button class="dark-mode-toggle" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+    </div>
+    <div class="footer">
+        <p class="footer__text">© 2025 Game Site. All rights reserved.</p>
+    </div>
+
+    <script>
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            document.querySelector('.container').classList.toggle('dark-mode');
+            document.querySelector('form')?.classList.toggle('dark-mode');
+            document.querySelectorAll('input')?.forEach(input => input.classList.toggle('dark-mode'));
+            document.querySelectorAll('.game-item')?.forEach(item => item.classList.toggle('dark-mode'));
+            document.querySelector('.footer')?.classList.toggle('dark-mode');
+        }
+    </script>
 </body>
 </html>
