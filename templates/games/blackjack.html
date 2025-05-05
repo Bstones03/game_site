@@ -1,0 +1,33 @@
+<h2>Blackjack</h2>
+<p>Balance: ${{ balance }}</p>
+
+{% if error %}
+    <p style="color:red">{{ error }}</p>
+{% endif %}
+
+{% if start_game %}
+    <form method="post">
+        {% csrf_token %}
+        <label for="bet">Enter your bet:</label>
+        <input type="number" name="bet" id="bet" min="1" max="{{ balance }}" value="{{ bet }}" placeholder="Same as last bet">
+        <button name="action" value="Start">Start Game</button>
+    </form>
+
+{% else %}
+    <p>Your hand: {{ player_hand }} (Total: {{ player_total }})</p>
+    <p>Dealer hand: {{ dealer_hand }} (Total: {{ dealer_total }})</p>
+
+    {% if message %}
+        <p><strong>{{ message }}</strong></p>
+        <a href="{% url 'blackjack' %}?reset=true">Play Again</a>
+    {% elif not game_over %}
+        <form method="post">
+            {% csrf_token %}
+            <button name="action" value="Hit">Hit</button>
+            <button name="action" value="Stand">Stand</button>
+        </form>
+    {% endif %}
+{% endif %}
+
+<br>
+<a href="{% url 'play' %}">Back to Games</a>
