@@ -1,3 +1,5 @@
+{% extends 'base.html' %}
+{% block content %}
 <h2>Welcome {{ request.user.username }}</h2>
 <p>Your Balance: ${{ profile.balance }}</p>
 
@@ -8,7 +10,7 @@
     <button type="submit">Sell Kidney for $100</button>
 </form>
 <br>
-<p style="font-size: 0.9em; color: #666; text-align: center; margin-top: 1em;">
+<p style="font-size: 0.9em; color: #ff6a00; text-align: center; margin-top: 1em;">
     By proceeding, you acknowledge and accept that this agreement is legally binding.
   </p>
 <br>
@@ -16,4 +18,5 @@
     {% csrf_token %}
     <button type="submit">Logout</button>
 </form>
+{% endblock %}
 

@@ -1,3 +1,5 @@
+{% extends 'base.html' %}
+{% block content %}
 <h2>Blackjack</h2>
 <p>Balance: ${{ balance }}</p>
 
@@ -16,18 +18,23 @@
 {% else %}
     <p>Your hand: {{ player_hand }} (Total: {{ player_total }})</p>
     <p>Dealer hand: {{ dealer_hand }} (Total: {{ dealer_total }})</p>
-
+    <br>
     {% if message %}
+    
         <p><strong>{{ message }}</strong></p>
+        <br>
         <a href="{% url 'blackjack' %}?reset=true">Play Again</a>
+        
     {% elif not game_over %}
         <form method="post">
             {% csrf_token %}
             <button name="action" value="Hit">Hit</button>
             <button name="action" value="Stand">Stand</button>
         </form>
+        
     {% endif %}
 {% endif %}
 
 <br>
 <a href="{% url 'play' %}">Back to Games</a>
+{% endblock %}
