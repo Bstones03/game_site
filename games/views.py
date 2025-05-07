@@ -285,7 +285,8 @@ def baccarat(request):
     profile, _ = UserProfile.objects.get_or_create(user=request.user)
     if request.method == 'POST':
         bet_choice = request.POST.get('bet_choice')
-        bet_amount = int(request.POST.get('bet', 0))
+        bet_amount = int(request.POST.get('bet') or request.session.get('last_bet', 0))
+        request.session['last_bet'] = bet_amount
         if bet_amount <= 0 or bet_amount > profile.balance:
             return render(request, 'games/baccarat.html', {'error': 'Invalid bet', 'balance': profile.balance})
 
@@ -308,7 +309,10 @@ def baccarat(request):
         return render(request, 'games/baccarat.html', {
             'player': player, 'banker': banker, 'balance': profile.balance, 'result': result
         })
-    return render(request, 'games/baccarat.html', {'balance': profile.balance})
+    return render(request, 'games/baccarat.html', {
+        'balance': profile.balance,
+        'bet': request.session.get('last_bet', ''),
+    })
 
 
 ##################################
@@ -318,7 +322,8 @@ def baccarat(request):
 def three_card_poker(request):
     profile, _ = UserProfile.objects.get_or_create(user=request.user)
     if request.method == 'POST':
-        bet_amount = int(request.POST.get('bet', 0))
+        bet_amount = int(request.POST.get('bet') or request.session.get('last_bet', 0))
+        request.session['last_bet'] = bet_amount
         if bet_amount <= 0 or bet_amount > profile.balance:
             return render(request, 'games/three_card_poker.html', {'error': 'Invalid bet', 'balance': profile.balance})
 
@@ -341,7 +346,10 @@ def three_card_poker(request):
         return render(request, 'games/three_card_poker.html', {
             'player': player, 'dealer': dealer, 'balance': profile.balance, 'result': result
         })
-    return render(request, 'games/three_card_poker.html', {'balance': profile.balance})
+    return render(request, 'games/three_card_poker.html', {
+        'balance': profile.balance,
+        'bet': request.session.get('last_bet', ''),
+    })
 
 
 ##################################
@@ -351,7 +359,8 @@ def three_card_poker(request):
 def war(request):
     profile, _ = UserProfile.objects.get_or_create(user=request.user)
     if request.method == 'POST':
-        bet_amount = int(request.POST.get('bet', 0))
+        bet_amount = int(request.POST.get('bet') or request.session.get('last_bet', 0))
+        request.session['last_bet'] = bet_amount
         if bet_amount <= 0 or bet_amount > profile.balance:
             return render(request, 'games/war.html', {'error': 'Invalid bet', 'balance': profile.balance})
 
@@ -374,4 +383,8 @@ def war(request):
         return render(request, 'games/war.html', {
             'player_card': player_card, 'dealer_card': dealer_card, 'balance': profile.balance, 'result': result
         })
-    return render(request, 'games/war.html', {'balance': profile.balance})
+    return render(request, 'games/war.html', {
+        'balance': profile.balance,
+        'bet': request.session.get('last_bet', ''),
+    })
+

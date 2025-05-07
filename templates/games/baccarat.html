@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Baccarat</h2>
+<p>Balance: ${{ balance }}</p>
+
+<form method="post">
+  {% csrf_token %}
+  <label>Bet Amount:</label>
+  <input type="number" name="bet" required min="1" max="{{ balance }}" value="{{ bet }}">
+  <br>
+  <label>Choose:</label>
+  <select name="bet_choice">
+    <option value="player">Player</option>
+    <option value="banker">Banker</option>
+    <option value="tie">Tie</option>
+  </select>
+  <button type="submit">Place Bet</button>
+</form>
+<br>
+{% if player %}
+  <p>Player Hand: {% for c in player %}{{ c.rank }}{{ c.suit }} {% endfor %}</p>
+  <p>Banker Hand: {% for c in banker %}{{ c.rank }}{{ c.suit }} {% endfor %}</p>
+  <p><strong>{{ result }}</strong></p>
+{% endif %}
+{% if error %}<p style="color:red">{{ error }}</p>{% endif %}
+<a href="{% url 'play' %}">Back</a>
+{% endblock %}

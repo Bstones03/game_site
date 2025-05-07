@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Casino War</h2>
+<p>Balance: ${{ balance }}</p>
+
+<form method="post">
+  {% csrf_token %}
+  <label>Bet Amount:</label>
+  <input type="number" name="bet" required min="1" max="{{ balance }}" value="{{ bet }}">
+  <button type="submit">Draw</button>
+</form>
+<br>
+{% if player_card %}
+  <p>Your Card: {{ player_card.rank }}{{ player_card.suit }}</p>
+  <p>Dealer Card: {{ dealer_card.rank }}{{ dealer_card.suit }}</p>
+  <p><strong>{{ result }}</strong></p>
+{% endif %}
+{% if error %}<p style="color:red">{{ error }}</p>{% endif %}
+<a href="{% url 'play' %}">Back</a>
+{% endblock %}
