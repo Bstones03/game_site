@@ -4,12 +4,12 @@ Welcome to **Django Game Site** — a simple web app where users can:
 
 - Sign up and log in
 - Manage their account balance
-- Play casino games
-        - Blackjack__
-        - Ride the Bus__
-        - Baccarat__
-        - Three Card Poker__
-        - Casino War__
+- Play casino games  
+        - Blackjack  
+        - Ride the Bus  
+        - Baccarat  
+        - Three Card Poker  
+        - Casino War  
 - See a dashboard of their profile
 This project uses **Django 5** and **SQLite** by default.
 
@@ -67,7 +67,22 @@ http://127.0.0.1:8000/
 ---
 
 
-Credit:
-Brennen:
-Kaylee:
-Harvey:
+Credit:  
+Brennen:  
+        - Implement the back-end infrastructure    
+        - Built logic for all games  
+        - Connected output to card png files  
+        - Conscripted manual tester  
+        
+Kaylee:  
+        - Finalize front end styling  
+        - Created card picture foundation  
+        - Assisted with toggle dark mode  
+        - Linked multiple pages with base styling template  
+        - Conscripted manual tester  
+        
+Harvey:  
+        - Stylise base styling template  
+        - Created layout of website
+        - Made toggle dark mode  
+        - Conscripted manual tester  
