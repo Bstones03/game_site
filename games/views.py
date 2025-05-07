@@ -261,3 +261,117 @@ def ride_the_bus(request):
         'result': session.get('rtb_result', ''),
         'error': ''
     })
+
+
+SUITS = ['♠', '♥', '♦', '♣']
+RANKS = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
+VALUES = {r: min(i+2, 10) for i, r in enumerate(RANKS)}  # for Baccarat
+POKER_VALUES = {r: i for i, r in enumerate(RANKS)}
+
+COLORS = {'♥': 'Red', '♦': 'Red', '♠': 'Black', '♣': 'Black'}
+
+def draw_card():
+    return {'rank': random.choice(RANKS), 'suit': random.choice(SUITS)}
+
+
+##################################
+# BACCARAT
+##################################
+
+def baccarat_total(hand):
+    return sum(VALUES[c['rank']] for c in hand) % 10
+
+def baccarat(request):
+    profile, _ = UserProfile.objects.get_or_create(user=request.user)
+    if request.method == 'POST':
+        bet_choice = request.POST.get('bet_choice')
+        bet_amount = int(request.POST.get('bet', 0))
+        if bet_amount <= 0 or bet_amount > profile.balance:
+            return render(request, 'games/baccarat.html', {'error': 'Invalid bet', 'balance': profile.balance})
+
+        profile.balance -= bet_amount
+        player = [draw_card(), draw_card()]
+        banker = [draw_card(), draw_card()]
+        p_total = baccarat_total(player)
+        b_total = baccarat_total(banker)
+
+        if (p_total > b_total and bet_choice == 'player') or \
+           (b_total > p_total and bet_choice == 'banker') or \
+           (p_total == b_total and bet_choice == 'tie'):
+            payout = bet_amount * (8 if bet_choice == 'tie' else 2)
+            profile.balance += payout
+            result = f"You won! {bet_choice} pays ${payout}."
+        else:
+            result = f"You lost. Player: {p_total}, Banker: {b_total}"
+
+        profile.save()
+        return render(request, 'games/baccarat.html', {
+            'player': player, 'banker': banker, 'balance': profile.balance, 'result': result
+        })
+    return render(request, 'games/baccarat.html', {'balance': profile.balance})
+
+
+##################################
+# THREE CARD POKER
+##################################
+
+def three_card_poker(request):
+    profile, _ = UserProfile.objects.get_or_create(user=request.user)
+    if request.method == 'POST':
+        bet_amount = int(request.POST.get('bet', 0))
+        if bet_amount <= 0 or bet_amount > profile.balance:
+            return render(request, 'games/three_card_poker.html', {'error': 'Invalid bet', 'balance': profile.balance})
+
+        profile.balance -= bet_amount
+        player = [draw_card() for _ in range(3)]
+        dealer = [draw_card() for _ in range(3)]
+        player_score = max(POKER_VALUES[c['rank']] for c in player)
+        dealer_score = max(POKER_VALUES[c['rank']] for c in dealer)
+
+        if player_score > dealer_score:
+            profile.balance += bet_amount * 2
+            result = "You win!"
+        elif player_score == dealer_score:
+            profile.balance += bet_amount
+            result = "Tie. Bet returned."
+        else:
+            result = "You lose."
+
+        profile.save()
+        return render(request, 'games/three_card_poker.html', {
+            'player': player, 'dealer': dealer, 'balance': profile.balance, 'result': result
+        })
+    return render(request, 'games/three_card_poker.html', {'balance': profile.balance})
+
+
+##################################
+# CASINO WAR
+##################################
+
+def war(request):
+    profile, _ = UserProfile.objects.get_or_create(user=request.user)
+    if request.method == 'POST':
+        bet_amount = int(request.POST.get('bet', 0))
+        if bet_amount <= 0 or bet_amount > profile.balance:
+            return render(request, 'games/war.html', {'error': 'Invalid bet', 'balance': profile.balance})
+
+        profile.balance -= bet_amount
+        player_card = draw_card()
+        dealer_card = draw_card()
+        player_val = POKER_VALUES[player_card['rank']]
+        dealer_val = POKER_VALUES[dealer_card['rank']]
+
+        if player_val > dealer_val:
+            profile.balance += bet_amount * 2
+            result = "You win the war!"
+        elif player_val == dealer_val:
+            profile.balance += bet_amount
+            result = "It's a tie."
+        else:
+            result = "Dealer wins."
+
+        profile.save()
+        return render(request, 'games/war.html', {
+            'player_card': player_card, 'dealer_card': dealer_card, 'balance': profile.balance, 'result': result
+        })
+    return render(request, 'games/war.html', {'balance': profile.balance})
