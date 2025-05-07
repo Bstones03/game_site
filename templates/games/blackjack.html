@@ -5,15 +5,48 @@
 <p><strong>Balance:</strong> ${{ balance }}</p>
 
 {% if result %}
-  <p><strong>{{ result }}</strong></p>
-  <a href="?reset=true">Play Again</a>
-{% endif %}
-
-{% if start_game %}
-  <form method="post">
+  <div style="margin: 20px 0;">
+    <p><strong>{{ result }}</strong></p>
+    {% if dealer_total != '?' %}
+      <p>
+        {% if player_total > 21 %}
+          Dealer wins by bust!
+        {% elif dealer_total > 21 %}
+          You win! Dealer busted.
+        {% elif player_total > dealer_total %}
+          You win with {{ player_total }} against {{ dealer_total }}!
+        {% elif player_total < dealer_total %}
+          Dealer wins with {{ dealer_total }} against your {{ player_total }}.
+        {% else %}
+          It's a tie!
+        {% endif %}
+      </p>
+    {% endif %}    
+    <div style="margin-top: 10px;">
+      <p>Your Hand ({{ player_total }}):</p>
+      <div style="display: flex; gap: 8px;">
+        {% for card in player_hand %}
+          <img src="{% static card.image_file %}" alt="{{ card.rank }}{{ card.suit }}" width="80">
+        {% endfor %}
+      </div>
+      <p>Dealer Hand ({{ dealer_total }}):</p>
+      <div style="display: flex; gap: 8px;">
+        {% for card in dealer_hand %}
+          {% if not game_over and forloop.first %}
+            <img src="{% static 'carddeck/back.png' %}" alt="Hidden" width="80">
+          {% else %}
+            <img src="{% static card.image_file %}" alt="{{ card.rank }}{{ card.suit }}" width="80">
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+    <a href="?reset=true" class="btn">Play Again</a>
+  </div>
+{% elif start_game %}
+  <form method="post" style="margin-top: 20px;">
     {% csrf_token %}
-    <label>Bet:</label>
-    <input type="number" name="bet" min="1" max="{{ balance }}" value="{{ bet }}">
+    <label for="bet">Enter your bet:</label>
+    <input type="number" name="bet" min="1" max="{{ balance }}" value="{{ bet|default:'' }}" placeholder="Same as last bet">
     <button name="action" value="Start">Start Game</button>
   </form>
 {% else %}
@@ -24,7 +57,6 @@
         <img src="{% static card.image_file %}" alt="{{ card.rank }}{{ card.suit }}" width="80">
       {% endfor %}
     </div>
-    <br>
     <p>Dealer Hand ({{ dealer_total }}):</p>
     <div style="display: flex; gap: 8px;">
       {% for card in dealer_hand %}
@@ -35,7 +67,6 @@
         {% endif %}
       {% endfor %}
     </div>
-
     {% if not game_over %}
       <form method="post" style="margin-top: 20px;">
         {% csrf_token %}
@@ -43,8 +74,12 @@
         <button name="action" value="Stand">Stand</button>
       </form>
     {% endif %}
+    {% if game_over%}
+    <a href="?reset=true" class="btn">Play Again</a>
+    {% endif %}
   </div>
 {% endif %}
 
+<br><br>
 <a href="{% url 'play' %}" style="text-decoration: underline;">Back to Games</a>
 {% endblock %}

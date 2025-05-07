@@ -12,7 +12,7 @@ def get_card():
         {"suit": "♥", "rank": "J", "image_file": "carddeck/jack_of_hearts2.png"},
         {"suit": "♥", "rank": "Q", "image_file": "carddeck/queen_of_hearts2.png"},
         {"suit": "♥", "rank": "K", "image_file": "carddeck/king_of_hearts2.png"},
-        {"suit": "♥", "rank": "A", "image_file": "carddeck/3ace_of_hearts.png"},
+        {"suit": "♥", "rank": "A", "image_file": "carddeck/ace_of_hearts.png"},
 
         {"suit": "♦", "rank": "2", "image_file": "carddeck/2_of_diamonds.png"},
         {"suit": "♦", "rank": "3", "image_file": "carddeck/3_of_diamonds.png"},
@@ -38,9 +38,9 @@ def get_card():
         {"suit": "♠", "rank": "8", "image_file": "carddeck/8_of_spades.png"},
         {"suit": "♠", "rank": "9", "image_file": "carddeck/9_of_spades.png"},
         {"suit": "♠", "rank": "10", "image_file": "carddeck/10_of_spades.png"},
-        {"suit": "♠", "rank": "J", "image_file": "carddeck/jack_of_spades.png"},
-        {"suit": "♠", "rank": "Q", "image_file": "carddeck/queen_of_spades.png"},
-        {"suit": "♠", "rank": "K", "image_file": "carddeck/king_2_of_spades.png"},
+        {"suit": "♠", "rank": "J", "image_file": "carddeck/jack_of_spades2.png"},
+        {"suit": "♠", "rank": "Q", "image_file": "carddeck/queen_of_spades2.png"},
+        {"suit": "♠", "rank": "K", "image_file": "carddeck/king_of_spades2.png"},
         {"suit": "♠", "rank": "A", "image_file": "carddeck/ace_of_spades.png"},
 
 

@@ -27,6 +27,9 @@
     {% for card in cards %}
       <img src="{% static card.image_file %}" alt="{{ card.rank }}{{ card.suit }}" width="80">
     {% endfor %}
+    {% if cards|length < stage %}
+      <img src="{% static 'carddeck/back.png' %}" alt="Hidden" width="80">
+    {% endif %}
   </div>
 
   <form method="post" style="margin-top: 20px;">

@@ -4,7 +4,12 @@ Welcome to **Django Game Site** — a simple web app where users can:
 
 - Sign up and log in
 - Manage their account balance
-- Play games
+- Play casino games
+        - Blackjack
+        - Ride the Bus
+        - Baccarat
+        - Three Card Poker
+        - Casino War
 - See a dashboard of their profile
 This project uses **Django 5** and **SQLite** by default.
 
@@ -61,3 +66,8 @@ http://127.0.0.1:8000/
 
 ---
 
+
+Credit:
+Brennen:
+Kaylee:
+Harvey:
