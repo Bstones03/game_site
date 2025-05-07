@@ -83,6 +83,6 @@ Kaylee:
         
 Harvey:  
         - Stylise base styling template  
-        - Created layout of website
+        - Created layout of website  
         - Made toggle dark mode  
         - Conscripted manual tester  
