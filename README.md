@@ -6,7 +6,6 @@ Welcome to **Django Game Site** — a simple web app where users can:
 - Manage their account balance
 - Play games
 - See a dashboard of their profile
-
 This project uses **Django 5** and **SQLite** by default.
 
 ---

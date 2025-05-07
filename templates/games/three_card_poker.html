@@ -10,7 +10,7 @@
   <input type="number" name="bet" required min="1" max="{{ balance }}">
   <button type="submit">Deal</button>
 </form>
-
+<br>
 {% if player %}
   <p>Your Hand:</p>
 <div style="display: flex; gap: 8px;">
@@ -18,12 +18,15 @@
     <img src="{% static c.image_file %}" alt="{{ c.rank }}{{ c.suit }}" width="80">
   {% endfor %}
 </div>
+<br>
   <p>Dealer Hand:</p>
 <div style="display: flex; gap: 8px;">
   {% for c in dealer %}
     <img src="{% static c.image_file %}" alt="{{ c.rank }}{{ c.suit }}" width="80">
   {% endfor %}
+
 </div>
+<br>
   <p><strong>{{ result }}</strong></p>
 {% endif %}
 {% if error %}<p style="color:red">{{ error }}</p>{% endif %}

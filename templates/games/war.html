@@ -12,16 +12,20 @@
 </form>
 
 {% if player_card %}
+<br>
   <p>Your Card:</p>
 <div>
   <img src="{% static player_card.image_file %}" alt="{{ player_card.rank }}{{ player_card.suit }}" width="80">
 </div>
+<br>
   <p>Dealer Card:</p>
 <div>
   <img src="{% static dealer_card.image_file %}" alt="{{ dealer_card.rank }}{{ dealer_card.suit }}" width="80">
 </div>
+<br>
   <p><strong>{{ result }}</strong></p>
 {% endif %}
+<br>
 {% if error %}<p style="color:red">{{ error }}</p>{% endif %}
 <a href="{% url 'play' %}">Back</a>
 {% endblock %}

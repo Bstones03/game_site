@@ -19,20 +19,25 @@
 </form>
 
 {% if player %}
+<br>
   <p>Player Hand:</p>
 <div style="display: flex; gap: 8px;">
   {% for c in player %}
     <img src="{% static c.image_file %}" alt="{{ c.rank }}{{ c.suit }}" width="80">
   {% endfor %}
 </div>
+<br>
   <p>Banker Hand:</p>
 <div style="display: flex; gap: 8px;">
   {% for c in banker %}
     <img src="{% static c.image_file %}" alt="{{ c.rank }}{{ c.suit }}" width="80">
   {% endfor %}
 </div>
+<br>
   <p><strong>{{ result }}</strong></p>
+  <br>
 {% endif %}
 {% if error %}<p style="color:red">{{ error }}</p>{% endif %}
+<br>
 <a href="{% url 'play' %}">Back</a>
 {% endblock %}
