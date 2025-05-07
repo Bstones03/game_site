@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
 <h2>Baccarat</h2>
 <p>Balance: ${{ balance }}</p>
@@ -6,7 +7,7 @@
 <form method="post">
   {% csrf_token %}
   <label>Bet Amount:</label>
-  <input type="number" name="bet" required min="1" max="{{ balance }}" value="{{ bet }}">
+  <input type="number" name="bet" required min="1" max="{{ balance }}">
   <br>
   <label>Choose:</label>
   <select name="bet_choice">
@@ -16,10 +17,20 @@
   </select>
   <button type="submit">Place Bet</button>
 </form>
-<br>
+
 {% if player %}
-  <p>Player Hand: {% for c in player %}{{ c.rank }}{{ c.suit }} {% endfor %}</p>
-  <p>Banker Hand: {% for c in banker %}{{ c.rank }}{{ c.suit }} {% endfor %}</p>
+  <p>Player Hand:</p>
+<div style="display: flex; gap: 8px;">
+  {% for c in player %}
+    <img src="{% static c.image_file %}" alt="{{ c.rank }}{{ c.suit }}" width="80">
+  {% endfor %}
+</div>
+  <p>Banker Hand:</p>
+<div style="display: flex; gap: 8px;">
+  {% for c in banker %}
+    <img src="{% static c.image_file %}" alt="{{ c.rank }}{{ c.suit }}" width="80">
+  {% endfor %}
+</div>
   <p><strong>{{ result }}</strong></p>
 {% endif %}
 {% if error %}<p style="color:red">{{ error }}</p>{% endif %}

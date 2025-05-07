@@ -1,10 +1,17 @@
 import random
 from django.shortcuts import render, redirect
 from accounts.models import UserProfile
+from .cards import get_card
+import random
+
+DECK = get_card()
 
 def play_game(request):
     profile, created = UserProfile.objects.get_or_create(user=request.user)
     return render(request, 'games/play.html', {'profile': profile})
+
+def draw_card():
+    return random.choice(DECK)
 
 
 ##################################
@@ -18,8 +25,6 @@ VALUES = {
     '8': 8, '9': 9, '10': 10, 'J': 10, 'Q': 10, 'K': 10, 'A': 11
 }
 
-def draw_card():
-    return {'rank': random.choice(RANKS), 'suit': random.choice(SUITS)}
 
 # Calculate hand total
 
@@ -151,8 +156,7 @@ SUITS = ['♥', '♦', '♠', '♣']
 RANKS = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
 VALUES = {rank: i for i, rank in enumerate(RANKS, start=2)}
 
-def draw_card():
-    return {'rank': random.choice(RANKS), 'suit': random.choice(SUITS)}
+
 
 def ride_the_bus(request):
     profile, _ = UserProfile.objects.get_or_create(user=request.user)
@@ -270,8 +274,6 @@ POKER_VALUES = {r: i for i, r in enumerate(RANKS)}
 
 COLORS = {'♥': 'Red', '♦': 'Red', '♠': 'Black', '♣': 'Black'}
 
-def draw_card():
-    return {'rank': random.choice(RANKS), 'suit': random.choice(SUITS)}
 
 
 ##################################
